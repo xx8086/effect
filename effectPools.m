@@ -38,9 +38,6 @@ NSInteger _current_frame_counts;
 -(void) init_fragment_shaders{//片元着色器shader
     _fragment_shader_file[EFFECT_TYPE_OUTSOUL] = @"outsoul";
     _fragment_shader_file[EFFECT_TYPE_SHAKE] = @"shake";
-    _fragment_shader_file[EFFECT_TYPE_LIGHTING] = @"lighting";
-    _fragment_shader_file[EFFECT_TYPE_INVERSION] = @"inversion";
-    _fragment_shader_file[EFFECT_TYPE_VORTEX] = @"vortex";
 }
 
 -(id) init{
@@ -74,13 +71,18 @@ NSInteger _current_frame_counts;
             break;
     }
 }
--(void) set_current_effect:(int)effecttype{
+-(GPUImageFilter*) set_current_effect:(int)effecttype{
     _current_effect = effecttype;
+    if (EFFECT_TYPE_COUNTS > effecttype && effecttype >= EFFECT_TYPE_OUTSOUL) {
+        return _effects[effecttype];
+    }
+    
 }
 
 -(void) set_current_frame_counts:(NSInteger)framecounts{
     _current_frame_counts = framecounts;
 }
+
 -(GPUImageFilter*) get_effect:(int) effecttype{
     return _effects[effecttype];
 }
@@ -88,9 +90,9 @@ NSInteger _current_frame_counts;
 -(void) render_outsoul_ratio:(float)ratio render_outsoul_alpha:(float)alpha{
     [_effects[EFFECT_TYPE_OUTSOUL] setFloat:ratio forUniformName:@"ratio"];
     [_effects[EFFECT_TYPE_OUTSOUL] setFloat:alpha forUniformName:@"alpha"];
-    CGRect rx = [ UIScreen mainScreen ].bounds;
-    [_effects[EFFECT_TYPE_OUTSOUL] setFloat:rx.size.width forUniformName:@"width"];
-    [_effects[EFFECT_TYPE_OUTSOUL] setFloat:rx.size.height forUniformName:@"height"];
+    //CGRect rx = [ UIScreen mainScreen ].bounds;
+    //[_effects[EFFECT_TYPE_OUTSOUL] setFloat:rx.size.width forUniformName:@"width"];
+    //[_effects[EFFECT_TYPE_OUTSOUL] setFloat:rx.size.height forUniformName:@"height"];
 }
 
 -(void) render_shake_ratio:(float)ratio{

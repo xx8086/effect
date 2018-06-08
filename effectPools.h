@@ -16,12 +16,13 @@ enum EffectType {
     EFFECT_TYPE_LIGHTING = 2,
     EFFECT_TYPE_INVERSION = 3,
     EFFECT_TYPE_VORTEX = 4,
+    EFFECT_TYPE_MULTWONDOW = 5,
     EFFECT_TYPE_COUNTS,
 } ;
 
 @interface EffectPools : NSObject 
 -(GPUImageFilter*) get_effect:(int)effecttype;
--(void) set_current_effect:(int)effecttype;
+-(GPUImageFilter*) set_current_effect:(int)effecttype;
 -(void) set_current_frame_counts:(NSInteger)framecounts;
 -(void) update:(NSInteger)frameid;
 @end
