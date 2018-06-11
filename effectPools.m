@@ -38,6 +38,8 @@ NSInteger _current_frame_counts;
 -(void) init_fragment_shaders{//片元着色器shader
     _fragment_shader_file[EFFECT_TYPE_OUTSOUL] = @"outsoul";
     _fragment_shader_file[EFFECT_TYPE_SHAKE] = @"shake";
+    _fragment_shader_file[EFFECT_TYPE_MULTWONDOW] = @"mult_window";
+    _fragment_shader_file[EFFECT_TYPE_BLUR] = @"blur";
 }
 
 -(id) init{
@@ -54,11 +56,11 @@ NSInteger _current_frame_counts;
 }
 
 -(void) update:(NSInteger)frameid{
-    frameid = frameid * 10;
     if(frameid >= _current_frame_counts ){
         frameid = 0;
     }
-    float ratio = 1.0 - (float)frameid/(_current_frame_counts);
+    float ratio = 1.0 - (float)frameid*10/(_current_frame_counts);
+    frameid++;
     
     switch(_current_effect){
         case EFFECT_TYPE_OUTSOUL:
@@ -67,6 +69,9 @@ NSInteger _current_frame_counts;
         case EFFECT_TYPE_SHAKE:
             [self render_shake_ratio:ratio];
             break;
+        case EFFECT_TYPE_BLUR:
+        [self render_blur_ratio:1.0/150 render_blur_range:0.3];
+        break;
         default:
             break;
     }
@@ -76,7 +81,7 @@ NSInteger _current_frame_counts;
     if (EFFECT_TYPE_COUNTS > effecttype && effecttype >= EFFECT_TYPE_OUTSOUL) {
         return _effects[effecttype];
     }
-    
+    return nil;
 }
 
 -(void) set_current_frame_counts:(NSInteger)framecounts{
@@ -98,6 +103,11 @@ NSInteger _current_frame_counts;
 -(void) render_shake_ratio:(float)ratio{
     [_effects[EFFECT_TYPE_SHAKE] setFloat:ratio forUniformName:@"ratio"];
 }
+    
+    -(void) render_blur_ratio:(float)ratio render_blur_range:(float)range{
+        [_effects[EFFECT_TYPE_BLUR] setFloat:ratio forUniformName:@"ratio"];
+        [_effects[EFFECT_TYPE_BLUR] setFloat:range forUniformName:@"range"];
+    }
 
 
 @end
