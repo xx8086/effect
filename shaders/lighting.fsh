@@ -1,7 +1,6 @@
 varying highp vec2 textureCoordinate;
 uniform sampler2D inputImageTexture;
 void main(){
-/*
     lowp vec3 tc = vec3(1.0, 0.0, 0.0);
     lowp vec3 pixcol = texture2D(inputImageTexture, textureCoordinate).rgb;
     lowp vec3 colors[3];
@@ -12,7 +11,7 @@ void main(){
     int ix = (lum < 0.5)? 0:1;
     tc = mix(colors[ix], colors[ix + 1], (lum - float(ix) * 0.5) / 0.5);
     gl_FragColor = vec4(tc, 1.0);
-*/
-    lowp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
-    gl_FragColor = vec4(1.0 - textureColor.rgb, textureColor.w);
+
+//    lowp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
+//   gl_FragColor = vec4(1.0 - textureColor.rgb, textureColor.w);
 }

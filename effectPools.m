@@ -38,8 +38,12 @@ NSInteger _current_frame_counts;
 -(void) init_fragment_shaders{//片元着色器shader
     _fragment_shader_file[EFFECT_TYPE_OUTSOUL] = @"outsoul";
     _fragment_shader_file[EFFECT_TYPE_SHAKE] = @"shake";
+    _fragment_shader_file[EFFECT_TYPE_LIGHTING] = @"lighting";
     _fragment_shader_file[EFFECT_TYPE_MULTWONDOW] = @"mult_window";
     _fragment_shader_file[EFFECT_TYPE_BLUR] = @"blur";
+    _fragment_shader_file[EFFECT_TYPE_COLOUR] = @"colour";
+    _fragment_shader_file[EFFECT_TYPE_SKETCHES] = @"sketches";
+    _fragment_shader_file[EFFECT_TYPE_INVERSION] = @"inversion";
 }
 
 -(id) init{
@@ -82,6 +86,11 @@ NSInteger _current_frame_counts;
             [self render_mult_window:frameid%2 ? 4 : 9];//9
         }
             break;
+        case EFFECT_TYPE_COLOUR:
+        {
+            [self render_colour:frameid];
+        }
+            break;
         default:
             break;
     }
@@ -121,6 +130,11 @@ NSInteger _current_frame_counts;
     
     -(void) render_mult_window:(int)window_counts{
         [_effects[EFFECT_TYPE_MULTWONDOW] setInteger:window_counts forUniformName:@"window_counts"];
+    }
+    
+    
+    -(void) render_colour:(int)colour{
+        [_effects[EFFECT_TYPE_COLOUR] setInteger:colour%7 forUniformName:@"colour"];//7种颜色
     }
     
 
