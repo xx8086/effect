@@ -60,18 +60,28 @@ NSInteger _current_frame_counts;
         frameid = 0;
     }
     float ratio = 1.0 - (float)frameid*10/(_current_frame_counts);
-    frameid++;
     
     switch(_current_effect){
         case EFFECT_TYPE_OUTSOUL:
+        {
             [self render_outsoul_ratio:ratio render_outsoul_alpha:0.7];
+        }
             break;
         case EFFECT_TYPE_SHAKE:
+        {
             [self render_shake_ratio:ratio];
+        }
             break;
         case EFFECT_TYPE_BLUR:
-        [self render_blur_ratio:1.0/150 render_blur_range:0.3];
-        break;
+        {
+            [self render_blur_ratio:1.0/150 render_blur_range:0.3];
+        }
+            break;
+        case EFFECT_TYPE_MULTWONDOW:
+        {
+            [self render_mult_window:frameid%2 ? 4 : 9];//9
+        }
+            break;
         default:
             break;
     }
@@ -104,10 +114,14 @@ NSInteger _current_frame_counts;
     [_effects[EFFECT_TYPE_SHAKE] setFloat:ratio forUniformName:@"ratio"];
 }
     
-    -(void) render_blur_ratio:(float)ratio render_blur_range:(float)range{
-        [_effects[EFFECT_TYPE_BLUR] setFloat:ratio forUniformName:@"ratio"];
-        [_effects[EFFECT_TYPE_BLUR] setFloat:range forUniformName:@"range"];
+-(void) render_blur_ratio:(float)ratio render_blur_range:(float)range{
+    [_effects[EFFECT_TYPE_BLUR] setFloat:ratio forUniformName:@"ratio"];
+    [_effects[EFFECT_TYPE_BLUR] setFloat:range forUniformName:@"range"];
+}
+    
+    -(void) render_mult_window:(int)window_counts{
+        [_effects[EFFECT_TYPE_MULTWONDOW] setInteger:window_counts forUniformName:@"window_counts"];
     }
-
+    
 
 @end

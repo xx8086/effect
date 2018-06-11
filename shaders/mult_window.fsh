@@ -1,7 +1,10 @@
 
 precision mediump float;
+precision mediump int;
 varying highp vec2 textureCoordinate;
 uniform sampler2D inputImageTexture;
+uniform int window_counts;
+
 vec2 mapuv(vec2 uv,float range){
     float rate = (1.0 - 2.0 * range);
     vec2 center = vec2(0.5, 0.5);
@@ -10,29 +13,53 @@ vec2 mapuv(vec2 uv,float range){
     float y = uv.y + center.y*(-distance.y/center.y) * rate;
     return vec2(x, y);
 }
+/*
+ 
+ 0---------->u
+ |
+ |
+ |
+ V v
+ */
+vec4 four(){
+    vec2 tex = vec2(textureCoordinate.x * 2.0, textureCoordinate.y * 2.0);
+    if(tex.x > 1.0){
+        tex.x = tex.x - 1.0;
+    }
+    if(tex.y > 1.0){
+        tex.y = tex.y - 1.0;
+    }
+    return texture2D(inputImageTexture, tex);
+}
+
+vec4 nine(){
+    vec2 tex = vec2(textureCoordinate.x * 3.0, textureCoordinate.y * 3.0);
+    if(tex.x > 1.0 && 2.0 >= tex.x){
+        tex.x = tex.x - 1.0;
+    }
+    else if(tex.x > 2.0){
+        tex.x = tex.x - 2.0;
+    }
+    
+    if(tex.y > 1.0 && 2.0 >= tex.y){
+        tex.y = tex.y - 1.0;
+    }
+    else if(tex.y > 2.0){
+        tex.y = tex.y - 2.0;
+    }
+    return texture2D(inputImageTexture, tex);
+}
 
 void main(void){
-    float fstep = 0.5;
-    vec2 tex = mapuv(textureCoordinate, 0.25);
-    //vec4 sample_1 = texture2D(inputImageTexture, vec2(tex.x - fstep, tex.y + fstep));
-    //vec4 sample_2 = texture2D(inputImageTexture, vec2(tex.x + fstep, tex.y + fstep));
-    //vec4 sample_3 = texture2D(inputImageTexture, vec2(tex.x - fstep, tex.y - fstep));
-    //vec4 sample_4 = texture2D(inputImageTexture, vec2(tex.x + fstep, tex.y - fstep));
-    vec4 sample_tex;
-    if(tex.x > 0.5 && tex.y < 0.5){
-        sample_tex = texture2D(inputImageTexture, vec2(tex.x - fstep, tex.y + fstep));
+    //vec4 sample_tex;
+    if(4 == window_counts){
+        gl_FragColor = four();
     }
-    else if(tex.x < 0.5 && tex.y < 0.5){
-        sample_tex = texture2D(inputImageTexture, vec2(tex.x + fstep, tex.y + fstep));
+    else if(9 == window_counts){
+        gl_FragColor = nine();
     }
-    else if(tex.x > 0.5 && tex.y > 0.5){
-        sample_tex = texture2D(inputImageTexture, vec2(tex.x - fstep, tex.y - fstep));
-    }
-    else if(tex.x < 0.5 && tex.y > 0.5){
-        sample_tex = texture2D(inputImageTexture, vec2(tex.x + fstep, tex.y - fstep));
-    }else{
-        ;
+    else{
+        gl_FragColor = texture2D(inputImageTexture, textureCoordinate);
     }
 
-    gl_FragColor = sample_tex;
 }
